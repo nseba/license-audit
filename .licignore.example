@@ -1,0 +1,61 @@
+# License Audit Ignore File
+# Similar to .gitignore - specify files and directories to ignore during scanning
+
+# Common directories to ignore
+node_modules/
+vendor/
+.git/
+.svn/
+.hg/
+
+# Build and distribution directories
+build/
+dist/
+target/
+bin/
+obj/
+out/
+
+# Temporary and cache files
+*.tmp
+*.temp
+*.cache
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Package manager lock files (optional - you may want to scan these)
+# package-lock.json
+# yarn.lock
+# Gemfile.lock
+
+# Test directories (optional)
+test/
+tests/
+__tests__/
+spec/
+
+# Documentation directories (optional)
+docs/
+documentation/
+
+# Specific packages to ignore
+internal-package
+company-proprietary-*
+
+# Pattern examples:
+# Ignore all files starting with "temp-"
+temp-*
+
+# Don't ignore important files (negation)
+!important-dependency
+
+# Ignore specific paths
+/path/to/specific/file
+/another/specific/directory/

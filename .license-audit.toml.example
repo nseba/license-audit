@@ -1,0 +1,56 @@
+# License Audit Configuration File
+# Copy this file to .license-audit.toml and customize as needed
+
+# Output configuration
+output_format = "json"  # "json" or "markdown"
+output_file = ""        # Empty means stdout, or specify a file path
+enable_audit = true     # Enable license auditing
+
+# Paths to scan (relative or absolute)
+scan_paths = ["."]
+
+# Ignore file pattern (similar to .gitignore)
+ignore_file = ".licignore"
+
+# Additional configuration file paths to load
+config_paths = []
+
+# License overrides for packages that don't have clear license information
+# Format: "package-name" = "License-ID"
+[license_overrides]
+"example-package" = "MIT"
+"internal-tool" = "Proprietary"
+
+# Licenses considered dangerous (will generate ERROR level issues)
+dangerous_licenses = [
+  "GPL-2.0",
+  "GPL-3.0", 
+  "AGPL-3.0",
+  "LGPL-2.1",
+  "LGPL-3.0",
+  "CDDL-1.0",
+  "CDDL-1.1",
+  "CPL-1.0",
+  "EPL-1.0",
+  "EPL-2.0", 
+  "OSL-3.0",
+  "QPL-1.0"
+]
+
+# Licenses considered unclear (will generate WARNING level issues)
+unclear_licenses = [
+  "UNKNOWN",
+  "UNLICENSED",
+  "PROPRIETARY", 
+  "COMMERCIAL",
+  ""
+]
+
+# Scanner configuration - enable/disable specific package managers
+[scanners]
+nodejs = true   # package.json, package-lock.json
+go = true       # go.mod, go.sum
+docker = true   # Dockerfile
+python = true   # requirements.txt, setup.py, pyproject.toml
+ruby = true     # Gemfile, Gemfile.lock, .gemspec
+java = true     # pom.xml, build.gradle
