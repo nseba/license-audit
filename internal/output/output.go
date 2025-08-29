@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"license-audit/pkg/types"
 )
 
@@ -129,7 +131,7 @@ func (f *MarkdownFormatter) Write(result *types.ScanResult, outputPath string) e
 func (f *MarkdownFormatter) writeIssues(sb *strings.Builder, issues []types.AuditIssue) {
 	for _, issue := range issues {
 		sb.WriteString(fmt.Sprintf("#### %s\n\n", issue.Dependency.Name))
-		sb.WriteString(fmt.Sprintf("- **Type:** %s\n", strings.Title(strings.ReplaceAll(issue.Type, "_", " "))))
+		sb.WriteString(fmt.Sprintf("- **Type:** %s\n", cases.Title(language.English).String(strings.ReplaceAll(issue.Type, "_", " "))))
 		sb.WriteString(fmt.Sprintf("- **Message:** %s\n", issue.Message))
 		sb.WriteString(fmt.Sprintf("- **Package:** %s@%s (%s)\n", 
 			issue.Dependency.Name, issue.Dependency.Version, issue.Dependency.PackageType))
