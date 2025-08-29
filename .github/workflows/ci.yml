@@ -71,6 +71,4 @@ jobs:
         go-version: '1.24'
     
     - name: Run Gosec Security Scanner
-      run: |
-        go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
-        gosec ./...
+      uses: cosmos/gosec@master
