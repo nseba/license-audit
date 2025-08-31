@@ -8,7 +8,8 @@
       "Bash(go build:*)",
       "Bash(./license-audit --help)",
       "Bash(./license-audit:*)",
-      "Bash(go test:*)"
+      "Bash(go test:*)",
+      "Bash(git tag:*)"
     ],
     "deny": [],
     "ask": []

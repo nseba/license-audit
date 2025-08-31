@@ -17,6 +17,9 @@ var (
 	outputFile   string
 	scanPath     string
 	enableAudit  bool
+	// Version information
+	appVersion   string
+	appBuildTime string
 )
 
 var rootCmd = &cobra.Command{
@@ -25,6 +28,13 @@ var rootCmd = &cobra.Command{
 	Long: `license-audit scans your project dependencies and generates detailed 
 license reports. It supports Node.js, Go, Docker, Python, Ruby, and Java projects.`,
 	Run: run,
+}
+
+// SetVersion sets the version information
+func SetVersion(version, buildTime string) {
+	appVersion = version
+	appBuildTime = buildTime
+	rootCmd.Version = fmt.Sprintf("%s (built: %s)", version, buildTime)
 }
 
 func Execute() {
