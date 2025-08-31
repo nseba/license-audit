@@ -17,9 +17,6 @@ var (
 	outputFile   string
 	scanPath     string
 	enableAudit  bool
-	// Version information
-	appVersion   string
-	appBuildTime string
 )
 
 var rootCmd = &cobra.Command{
@@ -32,8 +29,6 @@ license reports. It supports Node.js, Go, Docker, Python, Ruby, and Java project
 
 // SetVersion sets the version information
 func SetVersion(version, buildTime string) {
-	appVersion = version
-	appBuildTime = buildTime
 	rootCmd.Version = fmt.Sprintf("%s (built: %s)", version, buildTime)
 }
 

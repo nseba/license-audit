@@ -9,7 +9,8 @@
       "Bash(./license-audit --help)",
       "Bash(./license-audit:*)",
       "Bash(go test:*)",
-      "Bash(git tag:*)"
+      "Bash(git tag:*)",
+      "Bash(golangci-lint run:*)"
     ],
     "deny": [],
     "ask": []
