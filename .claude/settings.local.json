@@ -10,7 +10,9 @@
       "Bash(./license-audit:*)",
       "Bash(go test:*)",
       "Bash(git tag:*)",
-      "Bash(golangci-lint run:*)"
+      "Bash(golangci-lint run:*)",
+      "Bash(make tag-current:*)",
+      "Bash(make semantic-release-dry-run:*)"
     ],
     "deny": [],
     "ask": []
