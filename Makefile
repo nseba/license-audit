@@ -1,7 +1,7 @@
 # Makefile for license-audit
 # Provides manual and semantic release functionality
 
-.PHONY: help build test clean install release-patch release-minor release-major tag-current current-version next-version
+.PHONY: help build test clean install release-patch release-minor release-major tag-current current-version next-version semantic-release semantic-release-dry-run install-svu
 
 # Default target
 .DEFAULT_GOAL := help
@@ -148,10 +148,20 @@ release-info: ## Show release information and commands
 	@echo ""
 	@echo "Current version: $(CURRENT_VERSION)"
 	@echo ""
-	@echo "Available release commands:"
+	@echo "Manual release commands:"
 	@echo "  make release-patch  - Create patch release: $(NEXT_PATCH)"
 	@echo "  make release-minor  - Create minor release: $(NEXT_MINOR)"
 	@echo "  make release-major  - Create major release: $(NEXT_MAJOR)"
+	@echo ""
+	@echo "Semantic release commands (based on conventional commits):"
+	@echo "  make semantic-release-dry-run  - Preview next semantic version"
+	@echo "  make semantic-release          - Automatically create semantic release"
+	@echo ""
+	@echo "Conventional Commits Format:"
+	@echo "  feat: new feature (minor version bump)"
+	@echo "  fix: bug fix (patch version bump)"
+	@echo "  feat!: breaking change (major version bump)"
+	@echo "  BREAKING CHANGE: in commit body (major version bump)"
 	@echo ""
 	@echo "Semantic Versioning:"
 	@echo "  PATCH (x.y.Z) - Bug fixes, no breaking changes"
@@ -181,3 +191,44 @@ mod-update: ## Update go modules
 # Quick development workflow
 quick-check: fmt vet ## Quick check (format and vet only)
 	@echo "Quick checks completed."
+
+# Semantic Release using Go tools
+install-svu: ## Install svu (semantic version util) for automated releases
+	@echo "Installing svu..."
+	@which svu > /dev/null || go install github.com/caarlos0/svu@latest
+	@echo "svu installed successfully"
+
+semantic-release-dry-run: install-svu ## Perform a dry run of semantic release
+	@echo "Performing semantic release dry run..."
+	@echo "Current version: $(CURRENT_VERSION)"
+	@next_version=$$(svu next); \
+	if [ "$$next_version" = "$(CURRENT_VERSION)" ]; then \
+		echo "No new version to release based on conventional commits"; \
+		echo "Make sure you have commits with feat:, fix:, or BREAKING CHANGE:"; \
+	else \
+		echo "Next version would be: $$next_version"; \
+		echo "Changes since $(CURRENT_VERSION):"; \
+		git log $(CURRENT_VERSION)..HEAD --oneline --pretty=format:"  %h %s"; \
+	fi
+
+semantic-release: pre-release install-svu ## Automatically create a release based on conventional commits
+	@echo "Starting semantic release..."
+	@echo "Current version: $(CURRENT_VERSION)"
+	@next_version=$$(svu next); \
+	if [ "$$next_version" = "$(CURRENT_VERSION)" ]; then \
+		echo "No new version to release based on conventional commits"; \
+		echo "Make sure you have commits with feat:, fix:, or BREAKING CHANGE:"; \
+		exit 1; \
+	fi; \
+	echo "Next version: $$next_version"; \
+	echo ""; \
+	echo "Changes since $(CURRENT_VERSION):"; \
+	git log $(CURRENT_VERSION)..HEAD --oneline --pretty=format:"  %h %s"; \
+	echo ""; \
+	echo ""; \
+	read -p "Continue with semantic release $$next_version? [y/N]: " confirm && [ "$$confirm" = "y" ]; \
+	echo "Creating release $$next_version..."; \
+	git tag -a $$next_version -m "Release $$next_version"; \
+	echo ""; \
+	echo "✅ Semantic release $$next_version created successfully!"; \
+	echo "To push the tag: git push origin $$next_version"
