@@ -81,16 +81,16 @@ func (f *MarkdownFormatter) Write(result *types.ScanResult, outputPath string) e
 	// Issues Section
 	if len(result.Issues) > 0 {
 		sb.WriteString("## Issues\n\n")
-		
+
 		// Group issues by severity
 		errorIssues := filterIssuesBySeverity(result.Issues, "error")
 		warningIssues := filterIssuesBySeverity(result.Issues, "warning")
-		
+
 		if len(errorIssues) > 0 {
 			sb.WriteString("### 🚨 Errors\n\n")
 			f.writeIssues(&sb, errorIssues)
 		}
-		
+
 		if len(warningIssues) > 0 {
 			sb.WriteString("### ⚠️ Warnings\n\n")
 			f.writeIssues(&sb, warningIssues)
@@ -101,20 +101,20 @@ func (f *MarkdownFormatter) Write(result *types.ScanResult, outputPath string) e
 	sb.WriteString("## Dependencies\n\n")
 	sb.WriteString("| Name | Version | License | Type | File Path |\n")
 	sb.WriteString("|------|---------|---------|------|-----------|\n")
-	
+
 	for _, dep := range result.Dependencies {
 		name := dep.Name
 		version := dep.Version
 		license := dep.LicenseType
 		pkgType := dep.PackageType
 		filePath := dep.FilePath
-		
+
 		// Escape pipe characters in the data
 		name = strings.ReplaceAll(name, "|", "\\|")
 		version = strings.ReplaceAll(version, "|", "\\|")
 		license = strings.ReplaceAll(license, "|", "\\|")
-		
-		sb.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s |\n", 
+
+		sb.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s |\n",
 			name, version, license, pkgType, filePath))
 	}
 
@@ -133,22 +133,22 @@ func (f *MarkdownFormatter) writeIssues(sb *strings.Builder, issues []types.Audi
 		sb.WriteString(fmt.Sprintf("#### %s\n\n", issue.Dependency.Name))
 		sb.WriteString(fmt.Sprintf("- **Type:** %s\n", cases.Title(language.English).String(strings.ReplaceAll(issue.Type, "_", " "))))
 		sb.WriteString(fmt.Sprintf("- **Message:** %s\n", issue.Message))
-		sb.WriteString(fmt.Sprintf("- **Package:** %s@%s (%s)\n", 
+		sb.WriteString(fmt.Sprintf("- **Package:** %s@%s (%s)\n",
 			issue.Dependency.Name, issue.Dependency.Version, issue.Dependency.PackageType))
 		sb.WriteString(fmt.Sprintf("- **File:** %s\n", issue.Dependency.FilePath))
-		
+
 		if issue.Suggestion != "" {
 			sb.WriteString(fmt.Sprintf("- **Suggestion:** %s\n", issue.Suggestion))
 		}
-		
+
 		if issue.Dependency.Repository != "" {
 			sb.WriteString(fmt.Sprintf("- **Repository:** %s\n", issue.Dependency.Repository))
 		}
-		
+
 		if issue.Dependency.Homepage != "" {
 			sb.WriteString(fmt.Sprintf("- **Homepage:** %s\n", issue.Dependency.Homepage))
 		}
-		
+
 		sb.WriteString("\n")
 	}
 }

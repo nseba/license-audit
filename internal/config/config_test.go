@@ -31,7 +31,7 @@ func TestLoadConfigFile(t *testing.T) {
 	// Create temporary config file
 	tmpDir := t.TempDir()
 	configPath := filepath.Join(tmpDir, "test-config.toml")
-	
+
 	configContent := `
 output_format = "markdown"
 enable_audit = false

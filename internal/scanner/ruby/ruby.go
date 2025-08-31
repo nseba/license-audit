@@ -28,7 +28,7 @@ func (s *Scanner) Detect(path string) bool {
 
 func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
 	fileName := filepath.Base(path)
-	
+
 	switch {
 	case fileName == "Gemfile":
 		return s.scanGemfile(path)
@@ -50,13 +50,13 @@ func (s *Scanner) scanGemfile(path string) ([]types.Dependency, error) {
 
 	var dependencies []types.Dependency
 	scanner := bufio.NewScanner(file)
-	
+
 	// Regex to match gem declarations
 	gemPattern := regexp.MustCompile(`^\s*gem\s+['"]([^'"]+)['"](?:\s*,\s*['"]([^'"]+)['"])?`)
 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		
+
 		// Skip empty lines and comments
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue
@@ -95,20 +95,20 @@ func (s *Scanner) scanGemfileLock(path string) ([]types.Dependency, error) {
 	var dependencies []types.Dependency
 	scanner := bufio.NewScanner(file)
 	inSpecsSection := false
-	
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		trimmed := strings.TrimSpace(line)
-		
+
 		if trimmed == "GEM" {
 			continue
 		}
-		
+
 		if strings.HasPrefix(trimmed, "specs:") {
 			inSpecsSection = true
 			continue
 		}
-		
+
 		if inSpecsSection {
 			if strings.HasPrefix(line, "  ") && !strings.HasPrefix(line, "    ") {
 				// This is a direct dependency line
@@ -116,7 +116,7 @@ func (s *Scanner) scanGemfileLock(path string) ([]types.Dependency, error) {
 				if len(parts) >= 2 {
 					name := parts[0]
 					version := strings.Trim(parts[1], "()")
-					
+
 					dep := types.Dependency{
 						Name:        name,
 						Version:     version,
@@ -124,11 +124,11 @@ func (s *Scanner) scanGemfileLock(path string) ([]types.Dependency, error) {
 						PackageType: "ruby",
 						FilePath:    path,
 					}
-					
+
 					dependencies = append(dependencies, dep)
 				}
 			}
-			
+
 			if !strings.HasPrefix(line, " ") && trimmed != "" {
 				// End of specs section
 				break

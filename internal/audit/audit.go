@@ -74,14 +74,14 @@ func (a *Auditor) Audit(dependencies []types.Dependency) []types.AuditIssue {
 
 func (a *Auditor) GetIssueBreakdown(issues []types.AuditIssue) map[string]int {
 	breakdown := make(map[string]int)
-	
+
 	for _, issue := range issues {
 		key := issue.Severity + "_" + issue.Type
 		breakdown[key]++
 		breakdown[issue.Severity]++
 		breakdown[issue.Type]++
 	}
-	
+
 	return breakdown
 }
 
@@ -91,25 +91,25 @@ func (a *Auditor) isDangerousLicense(licenseType string) bool {
 	}
 
 	licenseType = strings.ToUpper(licenseType)
-	
+
 	for _, dangerous := range a.config.DangerousLicenses {
 		if strings.ToUpper(dangerous) == licenseType {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
 func (a *Auditor) isUnclearLicense(licenseType string) bool {
 	licenseType = strings.ToUpper(licenseType)
-	
+
 	for _, unclear := range a.config.UnclearLicenses {
 		if strings.ToUpper(unclear) == licenseType {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -117,67 +117,67 @@ func (a *Auditor) isPotentiallyTaintedLicense(dep types.Dependency) bool {
 	// Check for common indicators of tainted licenses
 	licenseText := strings.ToLower(dep.LicenseText)
 	licenseType := strings.ToLower(dep.LicenseType)
-	
+
 	// Multiple license mentions that might conflict
-	if strings.Contains(licenseText, "dual license") || 
-	   strings.Contains(licenseText, "multiple license") ||
-	   (strings.Contains(licenseType, "gpl") && strings.Contains(licenseText, "commercial")) {
+	if strings.Contains(licenseText, "dual license") ||
+		strings.Contains(licenseText, "multiple license") ||
+		(strings.Contains(licenseType, "gpl") && strings.Contains(licenseText, "commercial")) {
 		return true
 	}
-	
+
 	// Check for custom or modified licenses
-	if strings.Contains(licenseText, "modified") || 
-	   strings.Contains(licenseText, "custom") ||
-	   strings.Contains(licenseText, "proprietary") {
+	if strings.Contains(licenseText, "modified") ||
+		strings.Contains(licenseText, "custom") ||
+		strings.Contains(licenseText, "proprietary") {
 		return true
 	}
-	
+
 	return false
 }
 
 func (a *Auditor) getDangerousLicenseMessage(licenseType string) string {
 	messages := map[string]string{
-		"GPL-2.0":    "GPL-2.0 is a copyleft license that may require releasing your source code under the same license",
-		"GPL-3.0":    "GPL-3.0 is a copyleft license that may require releasing your source code under the same license",
-		"AGPL-3.0":   "AGPL-3.0 has strong copyleft requirements including network use provisions",
-		"LGPL-2.1":   "LGPL-2.1 may require releasing modifications to the library under the same license",
-		"LGPL-3.0":   "LGPL-3.0 may require releasing modifications to the library under the same license",
-		"CDDL-1.0":   "CDDL-1.0 has copyleft requirements that may conflict with proprietary code",
-		"CDDL-1.1":   "CDDL-1.1 has copyleft requirements that may conflict with proprietary code",
-		"EPL-1.0":    "EPL-1.0 has copyleft requirements for modifications and derivative works",
-		"EPL-2.0":    "EPL-2.0 has copyleft requirements for modifications and derivative works",
-		"CPL-1.0":    "CPL-1.0 has copyleft requirements that may affect your code",
-		"OSL-3.0":    "OSL-3.0 has strong copyleft requirements including network distribution",
-		"QPL-1.0":    "QPL-1.0 has specific requirements for commercial use",
+		"GPL-2.0":  "GPL-2.0 is a copyleft license that may require releasing your source code under the same license",
+		"GPL-3.0":  "GPL-3.0 is a copyleft license that may require releasing your source code under the same license",
+		"AGPL-3.0": "AGPL-3.0 has strong copyleft requirements including network use provisions",
+		"LGPL-2.1": "LGPL-2.1 may require releasing modifications to the library under the same license",
+		"LGPL-3.0": "LGPL-3.0 may require releasing modifications to the library under the same license",
+		"CDDL-1.0": "CDDL-1.0 has copyleft requirements that may conflict with proprietary code",
+		"CDDL-1.1": "CDDL-1.1 has copyleft requirements that may conflict with proprietary code",
+		"EPL-1.0":  "EPL-1.0 has copyleft requirements for modifications and derivative works",
+		"EPL-2.0":  "EPL-2.0 has copyleft requirements for modifications and derivative works",
+		"CPL-1.0":  "CPL-1.0 has copyleft requirements that may affect your code",
+		"OSL-3.0":  "OSL-3.0 has strong copyleft requirements including network distribution",
+		"QPL-1.0":  "QPL-1.0 has specific requirements for commercial use",
 	}
-	
+
 	if message, exists := messages[licenseType]; exists {
 		return message
 	}
-	
+
 	return "This license may have restrictions that could affect your project"
 }
 
 func (a *Auditor) getDangerousLicenseSuggestion(licenseType string) string {
 	suggestions := map[string]string{
-		"GPL-2.0":    "Consider using MIT, Apache-2.0, or BSD licensed alternatives",
-		"GPL-3.0":    "Consider using MIT, Apache-2.0, or BSD licensed alternatives", 
-		"AGPL-3.0":   "Consider using MIT, Apache-2.0, or BSD licensed alternatives",
-		"LGPL-2.1":   "Ensure you comply with LGPL requirements or find MIT/Apache alternatives",
-		"LGPL-3.0":   "Ensure you comply with LGPL requirements or find MIT/Apache alternatives",
-		"CDDL-1.0":   "Consider using Apache-2.0 or MIT licensed alternatives",
-		"CDDL-1.1":   "Consider using Apache-2.0 or MIT licensed alternatives",
-		"EPL-1.0":    "Consider using Apache-2.0 or MIT licensed alternatives",
-		"EPL-2.0":    "Consider using Apache-2.0 or MIT licensed alternatives",
-		"CPL-1.0":    "Consider using Apache-2.0 or MIT licensed alternatives",
-		"OSL-3.0":    "Consider using Apache-2.0 or MIT licensed alternatives",
-		"QPL-1.0":    "Review commercial use requirements or find alternatives",
+		"GPL-2.0":  "Consider using MIT, Apache-2.0, or BSD licensed alternatives",
+		"GPL-3.0":  "Consider using MIT, Apache-2.0, or BSD licensed alternatives",
+		"AGPL-3.0": "Consider using MIT, Apache-2.0, or BSD licensed alternatives",
+		"LGPL-2.1": "Ensure you comply with LGPL requirements or find MIT/Apache alternatives",
+		"LGPL-3.0": "Ensure you comply with LGPL requirements or find MIT/Apache alternatives",
+		"CDDL-1.0": "Consider using Apache-2.0 or MIT licensed alternatives",
+		"CDDL-1.1": "Consider using Apache-2.0 or MIT licensed alternatives",
+		"EPL-1.0":  "Consider using Apache-2.0 or MIT licensed alternatives",
+		"EPL-2.0":  "Consider using Apache-2.0 or MIT licensed alternatives",
+		"CPL-1.0":  "Consider using Apache-2.0 or MIT licensed alternatives",
+		"OSL-3.0":  "Consider using Apache-2.0 or MIT licensed alternatives",
+		"QPL-1.0":  "Review commercial use requirements or find alternatives",
 	}
-	
+
 	if suggestion, exists := suggestions[licenseType]; exists {
 		return suggestion
 	}
-	
+
 	return "Review the license terms carefully and consult with legal counsel if necessary"
 }
 
@@ -189,10 +189,10 @@ func (a *Auditor) getUnclearLicenseMessage(licenseType string) string {
 		"COMMERCIAL":  "This dependency requires a commercial license",
 		"":            "No license information found",
 	}
-	
+
 	if message, exists := messages[licenseType]; exists {
 		return message
 	}
-	
+
 	return "License information is unclear or ambiguous"
 }

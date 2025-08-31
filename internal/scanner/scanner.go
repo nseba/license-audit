@@ -7,18 +7,18 @@ import (
 	"time"
 
 	"license-audit/internal/ignore"
-	"license-audit/internal/scanner/nodejs"
-	"license-audit/internal/scanner/golang"
 	"license-audit/internal/scanner/docker"
+	"license-audit/internal/scanner/golang"
+	"license-audit/internal/scanner/java"
+	"license-audit/internal/scanner/nodejs"
 	"license-audit/internal/scanner/python"
 	"license-audit/internal/scanner/ruby"
-	"license-audit/internal/scanner/java"
 	"license-audit/pkg/types"
 )
 
 type Scanner struct {
-	config  *types.Config
-	matcher *ignore.Matcher
+	config   *types.Config
+	matcher  *ignore.Matcher
 	scanners []PackageScanner
 }
 

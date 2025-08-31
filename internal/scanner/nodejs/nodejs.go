@@ -14,14 +14,14 @@ import (
 type Scanner struct{}
 
 type PackageJSON struct {
-	Name         string                 `json:"name"`
-	Version      string                 `json:"version"`
-	License      interface{}            `json:"license"`
-	Licenses     []LicenseInfo          `json:"licenses"`
-	Repository   interface{}            `json:"repository"`
-	Homepage     string                 `json:"homepage"`
-	Dependencies map[string]string      `json:"dependencies"`
-	DevDependencies map[string]string   `json:"devDependencies"`
+	Name            string            `json:"name"`
+	Version         string            `json:"version"`
+	License         interface{}       `json:"license"`
+	Licenses        []LicenseInfo     `json:"licenses"`
+	Repository      interface{}       `json:"repository"`
+	Homepage        string            `json:"homepage"`
+	Dependencies    map[string]string `json:"dependencies"`
+	DevDependencies map[string]string `json:"devDependencies"`
 }
 
 type PackageLockJSON struct {
@@ -63,7 +63,7 @@ func (s *Scanner) Detect(path string) bool {
 
 func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
 	fileName := filepath.Base(path)
-	
+
 	switch fileName {
 	case "package.json":
 		return s.scanPackageJSON(path)
@@ -134,7 +134,7 @@ func (s *Scanner) scanPackageLock(path string) ([]types.Dependency, error) {
 			if pkgPath == "" {
 				continue
 			}
-			
+
 			name := pkg.Name
 			if name == "" {
 				// Extract name from path for scoped packages
@@ -196,7 +196,7 @@ func (s *Scanner) readLicenseFromNodeModules(pkgPath string) (string, string) {
 	pkgJSONPath := filepath.Join(pkgPath, "package.json")
 	if file, err := os.Open(pkgJSONPath); err == nil {
 		defer file.Close()
-		
+
 		data, err := io.ReadAll(file)
 		if err == nil {
 			var pkg PackageJSON
@@ -216,7 +216,7 @@ func (s *Scanner) readLicenseFromNodeModules(pkgPath string) (string, string) {
 
 func (s *Scanner) readLicenseFile(pkgPath string) string {
 	licenseFiles := []string{"LICENSE", "LICENSE.txt", "LICENSE.md", "license", "license.txt", "license.md"}
-	
+
 	for _, fileName := range licenseFiles {
 		licensePath := filepath.Join(pkgPath, fileName)
 		if data, err := os.ReadFile(licensePath); err == nil {

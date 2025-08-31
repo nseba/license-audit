@@ -39,7 +39,7 @@ func NewMatcher(ignoreFile string) (*Matcher, error) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		
+
 		// Skip empty lines and comments
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue
@@ -71,7 +71,7 @@ func NewMatcher(ignoreFile string) (*Matcher, error) {
 
 func (m *Matcher) ShouldIgnore(path, name string) bool {
 	matched := false
-	
+
 	for _, p := range m.patterns {
 		if m.matchPattern(p, path, name) {
 			if p.negate {
@@ -81,13 +81,13 @@ func (m *Matcher) ShouldIgnore(path, name string) bool {
 			}
 		}
 	}
-	
+
 	return matched
 }
 
 func (m *Matcher) matchPattern(p pattern, path, name string) bool {
 	target := name
-	
+
 	// If pattern contains '/', match against full path
 	if strings.Contains(p.pattern, "/") {
 		target = path

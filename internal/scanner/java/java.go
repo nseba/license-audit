@@ -38,13 +38,13 @@ func (s *Scanner) Name() string {
 
 func (s *Scanner) Detect(path string) bool {
 	fileName := filepath.Base(path)
-	return fileName == "pom.xml" || fileName == "build.gradle" || 
-		   fileName == "build.gradle.kts"
+	return fileName == "pom.xml" || fileName == "build.gradle" ||
+		fileName == "build.gradle.kts"
 }
 
 func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
 	fileName := filepath.Base(path)
-	
+
 	switch {
 	case fileName == "pom.xml":
 		return s.scanPOM(path)

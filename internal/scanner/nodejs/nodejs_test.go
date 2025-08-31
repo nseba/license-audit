@@ -7,7 +7,7 @@ import (
 
 func TestDetect(t *testing.T) {
 	scanner := NewScanner()
-	
+
 	testCases := []struct {
 		path     string
 		expected bool
@@ -30,11 +30,11 @@ func TestDetect(t *testing.T) {
 
 func TestScanPackageJSON(t *testing.T) {
 	scanner := NewScanner()
-	
+
 	// Use the test fixture
 	fixturesDir := "../../../test/fixtures"
 	packageJSONPath := filepath.Join(fixturesDir, "package.json")
-	
+
 	dependencies, err := scanner.Scan(packageJSONPath)
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -48,11 +48,11 @@ func TestScanPackageJSON(t *testing.T) {
 	found := make(map[string]bool)
 	for _, dep := range dependencies {
 		found[dep.Name] = true
-		
+
 		if dep.PackageType != "npm" {
 			t.Errorf("Expected package type 'npm', got '%s'", dep.PackageType)
 		}
-		
+
 		if dep.FilePath != packageJSONPath {
 			t.Errorf("Expected file path '%s', got '%s'", packageJSONPath, dep.FilePath)
 		}
@@ -68,7 +68,7 @@ func TestScanPackageJSON(t *testing.T) {
 
 func TestParseLicense(t *testing.T) {
 	scanner := NewScanner()
-	
+
 	testCases := []struct {
 		license  interface{}
 		expected string

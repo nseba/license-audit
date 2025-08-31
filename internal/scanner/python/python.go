@@ -22,13 +22,13 @@ func (s *Scanner) Name() string {
 
 func (s *Scanner) Detect(path string) bool {
 	fileName := filepath.Base(path)
-	return fileName == "requirements.txt" || fileName == "setup.py" || 
-		   fileName == "pyproject.toml" || fileName == "Pipfile"
+	return fileName == "requirements.txt" || fileName == "setup.py" ||
+		fileName == "pyproject.toml" || fileName == "Pipfile"
 }
 
 func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
 	fileName := filepath.Base(path)
-	
+
 	switch fileName {
 	case "requirements.txt":
 		return s.scanRequirements(path)
@@ -51,7 +51,7 @@ func (s *Scanner) scanRequirements(path string) ([]types.Dependency, error) {
 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		
+
 		// Skip empty lines and comments
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue
@@ -75,7 +75,7 @@ func (s *Scanner) parseRequirement(line, filePath string) types.Dependency {
 	// Parse package==version format
 	name := line
 	version := "UNKNOWN"
-	
+
 	for _, sep := range []string{"==", ">=", "<=", "~=", ">", "<"} {
 		if strings.Contains(line, sep) {
 			parts := strings.SplitN(line, sep, 2)

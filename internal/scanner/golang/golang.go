@@ -44,7 +44,7 @@ func (s *Scanner) Detect(path string) bool {
 
 func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
 	fileName := filepath.Base(path)
-	
+
 	switch fileName {
 	case "go.mod":
 		return s.scanGoMod(path)
@@ -67,7 +67,7 @@ func (s *Scanner) scanGoMod(path string) ([]types.Dependency, error) {
 
 func (s *Scanner) scanWithGoList(path string) ([]types.Dependency, error) {
 	dir := filepath.Dir(path)
-	
+
 	// Check if go command is available
 	if _, err := exec.LookPath("go"); err != nil {
 		return nil, fmt.Errorf("go command not found")
@@ -75,7 +75,7 @@ func (s *Scanner) scanWithGoList(path string) ([]types.Dependency, error) {
 
 	cmd := exec.Command("go", "list", "-m", "-json", "all")
 	cmd.Dir = dir
-	
+
 	output, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed to run 'go list': %w", err)
@@ -83,7 +83,7 @@ func (s *Scanner) scanWithGoList(path string) ([]types.Dependency, error) {
 
 	var dependencies []types.Dependency
 	decoder := json.NewDecoder(strings.NewReader(string(output)))
-	
+
 	for decoder.More() {
 		var mod GoMod
 		if err := decoder.Decode(&mod); err != nil {
@@ -128,7 +128,7 @@ func (s *Scanner) parseGoMod(path string) ([]types.Dependency, error) {
 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		
+
 		// Skip empty lines and comments
 		if line == "" || strings.HasPrefix(line, "//") {
 			continue
@@ -159,7 +159,7 @@ func (s *Scanner) parseRequireLine(line, filePath string) types.Dependency {
 	// Remove "require " prefix if present
 	line = strings.TrimPrefix(line, "require ")
 	line = strings.TrimSpace(line)
-	
+
 	// Skip invalid lines
 	if line == "" || line == "(" || line == ")" {
 		return types.Dependency{}
@@ -271,7 +271,7 @@ func (s *Scanner) getLicenseInfo(modulePath, workDir string) (string, string) {
 func (s *Scanner) getLicenseFromGoMod(modulePath, workDir string) (string, string) {
 	cmd := exec.Command("go", "list", "-m", "-f", "{{.Dir}}", modulePath)
 	cmd.Dir = workDir
-	
+
 	output, err := cmd.Output()
 	if err != nil {
 		return "", "UNKNOWN"
@@ -311,19 +311,19 @@ func (s *Scanner) readLicenseFromDir(dir string) (string, string) {
 
 func (s *Scanner) detectLicenseType(licenseText string) string {
 	text := strings.ToLower(licenseText)
-	
+
 	// Common license patterns
 	patterns := map[string]string{
-		"mit license":                    "MIT",
-		"apache license, version 2.0":   "Apache-2.0",
-		"apache license version 2.0":    "Apache-2.0",
-		"bsd 3-clause":                   "BSD-3-Clause",
-		"bsd 2-clause":                   "BSD-2-Clause",
-		"gnu general public license":     "GPL-3.0",
-		"gnu lesser general public":      "LGPL-3.0",
-		"mozilla public license":         "MPL-2.0",
-		"isc license":                    "ISC",
-		"unlicense":                      "Unlicense",
+		"mit license":                 "MIT",
+		"apache license, version 2.0": "Apache-2.0",
+		"apache license version 2.0":  "Apache-2.0",
+		"bsd 3-clause":                "BSD-3-Clause",
+		"bsd 2-clause":                "BSD-2-Clause",
+		"gnu general public license":  "GPL-3.0",
+		"gnu lesser general public":   "LGPL-3.0",
+		"mozilla public license":      "MPL-2.0",
+		"isc license":                 "ISC",
+		"unlicense":                   "Unlicense",
 	}
 
 	for pattern, license := range patterns {

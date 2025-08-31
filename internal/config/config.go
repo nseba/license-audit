@@ -59,11 +59,11 @@ func loadConfigFile(path string, cfg *types.Config) error {
 
 func getDefaultConfig() *types.Config {
 	return &types.Config{
-		ScanPaths:    []string{"."},
-		OutputFormat: "json",
-		OutputFile:   "",
-		IgnoreFile:   ".licignore",
-		ConfigPaths:  []string{},
+		ScanPaths:        []string{"."},
+		OutputFormat:     "json",
+		OutputFile:       "",
+		IgnoreFile:       ".licignore",
+		ConfigPaths:      []string{},
 		LicenseOverrides: map[string]string{},
 		DangerousLicenses: []string{
 			"GPL-2.0",
@@ -119,7 +119,7 @@ func validateConfig(cfg *types.Config) error {
 
 func SaveDefault(path string) error {
 	cfg := getDefaultConfig()
-	
+
 	f, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("failed to create config file: %w", err)

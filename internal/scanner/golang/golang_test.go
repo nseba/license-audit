@@ -7,7 +7,7 @@ import (
 
 func TestDetect(t *testing.T) {
 	scanner := NewScanner()
-	
+
 	testCases := []struct {
 		path     string
 		expected bool
@@ -30,7 +30,7 @@ func TestDetect(t *testing.T) {
 
 func TestParseRequireLine(t *testing.T) {
 	scanner := NewScanner()
-	
+
 	testCases := []struct {
 		line     string
 		expected string // expected name
@@ -48,7 +48,7 @@ func TestParseRequireLine(t *testing.T) {
 		if result.Name != tc.expected {
 			t.Errorf("parseRequireLine(%s).Name = %s, expected %s", tc.line, result.Name, tc.expected)
 		}
-		
+
 		if tc.expected != "" && result.PackageType != "go" {
 			t.Errorf("Expected package type 'go', got '%s'", result.PackageType)
 		}
@@ -57,11 +57,11 @@ func TestParseRequireLine(t *testing.T) {
 
 func TestScanGoMod(t *testing.T) {
 	scanner := NewScanner()
-	
+
 	// Use the test fixture
 	fixturesDir := "../../../test/fixtures"
 	goModPath := filepath.Join(fixturesDir, "go.mod")
-	
+
 	dependencies, err := scanner.Scan(goModPath)
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
@@ -75,11 +75,11 @@ func TestScanGoMod(t *testing.T) {
 	found := make(map[string]bool)
 	for _, dep := range dependencies {
 		found[dep.Name] = true
-		
+
 		if dep.PackageType != "go" {
 			t.Errorf("Expected package type 'go', got '%s'", dep.PackageType)
 		}
-		
+
 		if dep.FilePath != goModPath {
 			t.Errorf("Expected file path '%s', got '%s'", goModPath, dep.FilePath)
 		}
@@ -95,7 +95,7 @@ func TestScanGoMod(t *testing.T) {
 
 func TestDetectLicenseType(t *testing.T) {
 	scanner := NewScanner()
-	
+
 	testCases := []struct {
 		licenseText string
 		expected    string

@@ -23,8 +23,8 @@ func (s *Scanner) Name() string {
 
 func (s *Scanner) Detect(path string) bool {
 	fileName := filepath.Base(path)
-	return fileName == "Dockerfile" || fileName == "dockerfile" || 
-		   strings.HasSuffix(fileName, ".dockerfile")
+	return fileName == "Dockerfile" || fileName == "dockerfile" ||
+		strings.HasSuffix(fileName, ".dockerfile")
 }
 
 func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
@@ -39,17 +39,17 @@ func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
 
 	// Regex patterns for different package managers in Docker
 	patterns := map[string]*regexp.Regexp{
-		"apt":  regexp.MustCompile(`(?i)apt-get\s+install.*?(\S+)`),
-		"yum":  regexp.MustCompile(`(?i)yum\s+install.*?(\S+)`),
-		"apk":  regexp.MustCompile(`(?i)apk\s+add.*?(\S+)`),
-		"npm":  regexp.MustCompile(`(?i)npm\s+install\s+(?:.*?)?(\S+)`),
-		"pip":  regexp.MustCompile(`(?i)pip\s+install.*?(\S+)`),
-		"gem":  regexp.MustCompile(`(?i)gem\s+install.*?(\S+)`),
+		"apt": regexp.MustCompile(`(?i)apt-get\s+install.*?(\S+)`),
+		"yum": regexp.MustCompile(`(?i)yum\s+install.*?(\S+)`),
+		"apk": regexp.MustCompile(`(?i)apk\s+add.*?(\S+)`),
+		"npm": regexp.MustCompile(`(?i)npm\s+install\s+(?:.*?)?(\S+)`),
+		"pip": regexp.MustCompile(`(?i)pip\s+install.*?(\S+)`),
+		"gem": regexp.MustCompile(`(?i)gem\s+install.*?(\S+)`),
 	}
 
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
-		
+
 		// Skip comments and empty lines
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue
@@ -74,16 +74,16 @@ func (s *Scanner) Scan(path string) ([]types.Dependency, error) {
 
 func (s *Scanner) parseRunCommand(line string, patterns map[string]*regexp.Regexp, filePath string) []types.Dependency {
 	var dependencies []types.Dependency
-	
+
 	// Remove RUN prefix
 	command := strings.TrimSpace(strings.TrimPrefix(strings.TrimPrefix(line, "RUN"), "run"))
-	
+
 	for pkgManager, pattern := range patterns {
 		matches := pattern.FindAllStringSubmatch(command, -1)
 		for _, match := range matches {
 			if len(match) > 1 {
 				packageName := strings.TrimSpace(match[1])
-				
+
 				// Clean up package name
 				packageName = strings.Trim(packageName, "\"'")
 				if packageName == "" || strings.Contains(packageName, " ") {
@@ -97,12 +97,12 @@ func (s *Scanner) parseRunCommand(line string, patterns map[string]*regexp.Regex
 					PackageType: pkgManager,
 					FilePath:    filePath,
 				}
-				
+
 				dependencies = append(dependencies, dep)
 			}
 		}
 	}
-	
+
 	return dependencies
 }
 
@@ -113,7 +113,7 @@ func (s *Scanner) parseFromCommand(line string, filePath string) types.Dependenc
 	}
 
 	image := parts[1]
-	
+
 	// Skip scratch and empty images
 	if image == "scratch" || image == "" {
 		return types.Dependency{}
@@ -121,7 +121,7 @@ func (s *Scanner) parseFromCommand(line string, filePath string) types.Dependenc
 
 	name := image
 	version := "latest"
-	
+
 	// Parse image:tag format
 	if strings.Contains(image, ":") {
 		parts := strings.SplitN(image, ":", 2)

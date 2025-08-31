@@ -5,10 +5,10 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"license-audit/internal/config"
-	"license-audit/internal/scanner"
 	"license-audit/internal/audit"
+	"license-audit/internal/config"
 	"license-audit/internal/output"
+	"license-audit/internal/scanner"
 )
 
 var (
@@ -70,7 +70,7 @@ func run(cmd *cobra.Command, args []string) {
 
 	// Initialize scanner
 	s := scanner.New(cfg)
-	
+
 	// Scan for dependencies
 	result, err := s.Scan()
 	if err != nil {
@@ -109,7 +109,7 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	fmt.Printf("License audit completed. Report written to %s\n", outputPath)
-	
+
 	if len(result.Issues) > 0 {
 		fmt.Printf("Found %d license issues. Review the audit report for details.\n", len(result.Issues))
 		// Exit with code 1 if there are issues to support CI/CD pipelines
